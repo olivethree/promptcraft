@@ -16,9 +16,10 @@ Some functionalities of the current app are:
 - You can copy past the resulting full prompt to your clipboard so you can paste it into your favorite GenAI chatbot
 - You can save and download your generated prompts 
 - Keeps track of the history of generated prompts within the same session
+- Provides a classification score for the quality of your prompt based on its specificity
 
 
 # About Me
 
-Manuel Oliveira
+Manuel Oliveira  
 https://manueloliveira.nl/
