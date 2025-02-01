@@ -6,7 +6,7 @@ This tool was designed to help you develop your prompting skills for interacting
 
 Specifically, it guides you through the steps of effective prompting, helping you to buid an intuition for how to best steer GenAI tools to achieve your goals.
 
-Start PromptCraft: XXXX
+[Start PromptCraft](https://olivethree.github.io/promptcraft/)
 
 ## Features
 
