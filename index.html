@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Prompt Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f5f5;
+            /* Light gray background */
+            color: #333;
+            /* Dark gray text */
+            line-height: 1.6;
+            /* Improved readability */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            /* White container background */
+            border-radius: 8px;
+            /* Soft rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #0077cc;
+            /* Primary color for headings */
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 0;
+            color: #26a69a;
+            /* Secondary color for section headings */
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #eee;
+            /* Subtle border */
+            border-radius: 8px;
+        }
+
+        .section-input {
+            margin-bottom: 15px;
+        }
+
+        .section-input label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .section-input textarea {
+            width: 100%;
+            min-height: 80px;
+            /* Increased height */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .section-input textarea:focus {
+            outline: none;
+            border-color: #0077cc;
+            /* Highlight on focus */
+            box-shadow: 0 0 5px rgba(0, 119, 204, 0.5);
+        }
+
+        .buttons-area {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.3s ease;
+            /* Smooth transition */
+        }
+
+        .btn-generate {
+            background-color: #40e0d0;
+            /* Turquoise blue color */
+        }
+
+        .btn-generate:hover {
+            background-color: #21bdb0;
+            /* Slightly darker shade on hover */
+        }
+
+        .btn-copy {
+            background-color: #0077cc;
+        }
+
+        .btn-copy:hover {
+            background-color: #005fa3;
+        }
+
+        .btn-save {
+            background-color: #26a69a;
+        }
+
+        .btn-save:hover {
+            background-color: #1b7d6d;
+        }
+
+        .btn-download-history {
+            background-color: #95a5a6;
+        }
+
+        .btn-download-history:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .prompt-output {
+            border: 1px solid #26a69a;
+            padding: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: #f2faf8;
+            /* Light green background */
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .rating {
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .rating i {
+            margin-left: 5px;
+            color: #ffc107;
+            /* Star color */
+        }
+
+        /* Prompt Specificity colors */
+        .rating.very-low {
+            color: #e74c3c;
+        }
+
+        .rating.low {
+            color: #e67e22;
+        }
+
+        .rating.medium {
+            color: #f1c40f;
+        }
+
+        .rating.good {
+            color: #2ecc71;
+        }
+
+        .rating.excellent {
+            color: #27ae60;
+        }
+
+        .prompt-history {
+            margin-top: 40px;
+        }
+
+        .prompt-history-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .prompt-history-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .prompt-history-timestamp {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .prompt-history-content {
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+
+        .separator {
+            color: #ccc;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 95%;
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .section-input textarea {
+                min-height: 100px;
+            }
+
+            .buttons-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Prompt Builder</h1>
+        <div style="font-size: 0.9rem; margin-bottom: 20px;">
+            Manuel Oliveira | Augmented by AI
+        </div>
+
+        <div class="section">
+            <h2>Role and Expertise</h2>
+            <div class="section-input">
+                <label for="roleInput">1. Role <small>(essential for most tasks)</small></label>
+                <textarea id="roleInput"
+                    placeholder="Example: 'You are a highly experienced software engineer specializing in AI.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="expertiseInput">2. Additional Expertise (optional, but beneficial)</label>
+                <textarea id="expertiseInput"
+                    placeholder="Example: 'You also have a strong background in finance and data analytics.'"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Task and Context</h2>
+            <div class="section-input">
+                <label for="taskInput">3. Task Details <small>(highly recommended)</small></label>
+                <textarea id="taskInput"
+                    placeholder="Example: 'Write a product description for a new smart home device focusing on its eco-friendly features.'&#10;Another Example: 'Explain how to optimize a neural network's hyperparameters.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="contextInput">4. Context / Background (optional)</label>
+                <textarea id="contextInput"
+                    placeholder="Example: 'Assume the user is a beginner with no prior coding experience.'"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Constraints and Reasoning</h2>
+            <div class="section-input">
+                <label for="constraintsInput">5. Constraints / Rules (optional)</label>
+                <textarea id="constraintsInput" placeholder="Example: 'Answer must be under 200 words.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="chainInput">6. Chain-of-Thought / Reasoning Instructions (optional)</label>
+                <textarea id="chainInput"
+                    placeholder="Example: 'Provide a brief reasoning outline before giving the final answer.'"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Output Format and Style</h2>
+            <div class="section-input">
+                <label for="formatInput">7. Output Format <small>(often recommended)</small></label>
+                <textarea id="formatInput"
+                    placeholder="Example: 'Respond in bullet points.'&#10;Another Example: 'Use JSON format.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="examplesInput">8. Examples / Reference Prompts (optional)</label>
+                <textarea id="examplesInput"
+                    placeholder="Example: 'Here's an example of the style we want: ...'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="toneInput">9. Tone / Style (optional)</label>
+                <textarea id="toneInput"
+                    placeholder="Example: 'Use a conversational tone appropriate for a social media post.'"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Audience and Considerations</h2>
+            <div class="section-input">
+                <label for="audienceInput">10. Audience (optional)</label>
+                <textarea id="audienceInput"
+                    placeholder="Example: 'The audience is a group of college students interested in machine learning.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="avoidInput">11. Avoid / Do Not (optional)</label>
+                <textarea id="avoidInput"
+                    placeholder="Example: 'Avoid revealing personal data or making strong political opinions.'"></textarea>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Goals and Settings</h2>
+            <div class="section-input">
+                <label for="goalsInput">12. User Goals <small>(optional, but helpful)</small></label>
+                <textarea id="goalsInput"
+                    placeholder="Example: 'Help the user decide on a marketing strategy to increase brand awareness.'"></textarea>
+            </div>
+
+            <div class="section-input">
+                <label for="modelSettingsInput">13. Model / System Settings (optional)</label>
+                <textarea id="modelSettingsInput"
+                    placeholder="Example: 'Use temperature=0.7, top_p=0.9 for creative outputs.'"></textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-generate" onclick="generatePrompt()">Generate Prompt</button>
+
+        <div class="buttons-area">
+            <button class="btn btn-copy" onclick="copyPromptToClipboard()">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                        d="M10 1H6C5.45 1 5 1.45 5 2v1H4c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-1V2c0-.55-.45-1-1-1zM9 2v1H7V2h2zm3 3v8H4V5h1v1h6V5h1z">
+                    </path>
+                </svg>
+                Copy
+            </button>
+
+            <button class="btn btn-save" onclick="savePromptToFile()">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                        d="M.5 9.5a.5.5 0 01.5-.5h4V1.5a.5.5 0 011 0v7.5h4a.5.5 0 01.35.86l-4.5 4.5a.5.5 0 01-.7 0l-4.5-4.5a.5.5 0 01-.15-.36zM0 14.5a.5.5 0 01.5-.5h15a.5.5 0 010 1h-15a.5.5 0 01-.5-.5z">
+                    </path>
+                </svg>
+                Save
+            </button>
+            <button class="btn btn-download-history" onclick="downloadPromptHistory()">
+                <i class="fas fa-download"></i> Download History
+            </button>
+            <span id="ratingDisplay" class="rating">Prompt Specificity: N/A</span>
+        </div>
+
+        <div id="promptOutput" class="prompt-output"></div>
+        <div class="separator">----------</div>
+        <div id="promptHistory" class="prompt-history">
+            <h2>Prompt History</h2>
+        </div>
+    </div>
+
+    <script>
+        let promptHistory = [];
+
+        function generatePrompt() {
+            const role = document.getElementById('roleInput').value.trim();
+            const expertise = document.getElementById('expertiseInput').value.trim();
+            const task = document.getElementById('taskInput').value.trim();
+            const context = document.getElementById('contextInput').value.trim();
+            const constraints = document.getElementById('constraintsInput').value.trim();
+            const chain = document.getElementById('chainInput').value.trim();
+            const format = document.getElementById('formatInput').value.trim();
+            const examples = document.getElementById('examplesInput').value.trim();
+            const tone = document.getElementById('toneInput').value.trim();
+            const audience = document.getElementById('audienceInput').value.trim();
+            const avoid = document.getElementById('avoidInput').value.trim();
+            const goals = document.getElementById('goalsInput').value.trim();
+            const modelSettings = document.getElementById('modelSettingsInput').value.trim();
+
+            let prompt = "";
+            if (role) prompt += `Role: ${role}\n`;
+            if (expertise) prompt += `Additional Expertise: ${expertise}\n`;
+            if (task) prompt += `Task Details: ${task}\n`;
+            if (context) prompt += `Context/Background: ${context}\n`;
+            if (constraints) prompt += `Constraints/Rules: ${constraints}\n`;
+            if (chain) prompt += `Chain-of-Thought/Reasoning Instructions: ${chain}\n`;
+            if (format) prompt += `Output Format: ${format}\n`;
+            if (examples) prompt += `Examples/Reference Prompts: ${examples}\n`;
+            if (tone) prompt += `Tone/Style: ${tone}\n`;
+            if (audience) prompt += `Audience: ${audience}\n`;
+            if (avoid) prompt += `Avoid/Do Not: ${avoid}\n`;
+            if (goals) prompt += `User Goals: ${goals}\n`;
+            if (modelSettings) prompt += `Model/System Settings: ${modelSettings}\n`;
+
+            if (!prompt) prompt = "No input provided.";
+
+            document.getElementById('promptOutput').innerText = prompt;
+
+            const inputFields = document.querySelectorAll('.section-input textarea');
+
+            calculateSpecificityRating(Array.from(inputFields).map(field => field.value.trim()));
+
+            addPromptToHistory(prompt);
+        }
+
+        function calculateSpecificityRating(fields) {
+            let filledCount = fields.filter(field => field.length > 0).length;
+
+            let ratingText = "Very Low", ratingClass = "very-low";
+            if (filledCount >= 3) [ratingText, ratingClass] = ["Low", "low"];
+            if (filledCount >= 6) [ratingText, ratingClass] = ["Medium", "medium"];
+            if (filledCount >= 9) [ratingText, ratingClass] = ["Good", "good"];
+            if (filledCount >= 12) [ratingText, ratingClass] = ["Excellent", "excellent"];
+
+            const ratingDisplay = document.getElementById('ratingDisplay');
+            ratingDisplay.textContent = `Prompt Specificity: ${ratingText}`;
+            ratingDisplay.className = `rating ${ratingClass}`;
+
+            ratingDisplay.innerHTML = `Prompt Specificity: ${ratingText} <i class="fas fa-star"></i>`;
+        }
+
+        function copyPromptToClipboard() {
+            const promptText = document.getElementById('promptOutput').innerText;
+            if (!promptText) return;
+
+            navigator.clipboard.writeText(promptText)
+                .then(() => {
+                    alert("Prompt copied to clipboard!");
+                })
+                .catch(() => {
+                    alert("Failed to copy prompt.");
+                });
+        }
+
+        function savePromptToFile() {
+            const promptText = document.getElementById('promptOutput').innerText;
+            if (!promptText) {
+                alert("No prompt available to save.");
+                return;
+            }
+
+            const timestamp = new Date().toISOString().replace(/[-:.]/g, "_");
+            const filename = `prompt_${timestamp}.txt`;
+
+            const blob = new Blob([promptText], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        function addPromptToHistory(prompt) {
+            const timestamp = new Date();
+            const formattedTimestamp = `${timestamp.getDate()}/${timestamp.getMonth() + 1}/${timestamp.getFullYear()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`;
+            const promptNumber = promptHistory.length + 1;
+
+            promptHistory.push({
+                number: promptNumber,
+                timestamp: formattedTimestamp,
+                content: prompt
+            });
+            updatePromptHistoryUI();
+        }
+
+        function updatePromptHistoryUI() {
+            const historyContainer = document.getElementById('promptHistory');
+            historyContainer.innerHTML = '<h2>Prompt History</h2>'; // Clear existing content
+
+            for (const promptData of promptHistory) {
+                const promptBox = document.createElement('div');
+                promptBox.classList.add('prompt-history-box');
+
+                const header = document.createElement('div');
+                header.classList.add('prompt-history-header');
+                header.textContent = `Prompt number ${promptData.number}`;
+                promptBox.appendChild(header);
+
+                const timestamp = document.createElement('div');
+                timestamp.classList.add('prompt-history-timestamp');
+                timestamp.textContent = promptData.timestamp;
+                promptBox.appendChild(timestamp);
+
+                const content = document.createElement('div');
+                content.classList.add('prompt-history-content');
+                content.textContent = promptData.content;
+                promptBox.appendChild(content);
+
+                historyContainer.appendChild(promptBox);
+                // Add separator between prompts, except for the last one
+                if (promptData.number < promptHistory.length) {
+                    const separator = document.createElement('div');
+                    separator.classList.add('separator');
+                    separator.textContent = '----------';
+                    historyContainer.appendChild(separator);
+                }
+
+            }
+        }
+
+        function downloadPromptHistory() {
+            let historyText = "";
+            for (const promptData of promptHistory) {
+                historyText += `Prompt number ${promptData.number}\n`;
+                historyText += `Timestamp: ${promptData.timestamp}\n`;
+                historyText += `Content:\n${promptData.content}\n`;
+                historyText += "----------\n";
+            }
+
+            const filename = "prompt_history.txt";
+            const blob = new Blob([historyText], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+    </script>
+</body>
+
+</html>
